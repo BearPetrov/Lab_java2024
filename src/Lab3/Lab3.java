@@ -50,11 +50,8 @@ public class Lab3 {
     public static double calculateTask2Function(double t, int n, int l) {
         if (t <= 0.0) {
             throw new IllegalArgumentException("Invalid parameter t for Task 2: t must be greater than 0.");
-        } else if (l % 2 == 0 && l != 2 && l != 4 && l != 6) {
-            throw new IllegalArgumentException("Invalid parameter l for Task 2: l must be 2, 4, or 6 for even l.");
-        } else if (l % 2 != 0 && l != 1 && l != 3 && l != 5) {
-            throw new IllegalArgumentException("Invalid parameter l for Task 2: l must be 1, 3, or 5 for odd l.");
-        } else {
+        }
+         else {
             double sum = 0.0;
 
             for(int i = 1; i <= n; ++i) {
