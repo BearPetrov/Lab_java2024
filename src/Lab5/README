@@ -1,0 +1,22 @@
+Лабораторна робота №5
+Тема: Алгоритми сортування
+
+Хід роботи:
+1. Ознайомитись з алгоритмами сортування:
+1.1. Сортування обміном (сортування бульбашкою, Bubble sort)
+https://uk.wikipedia.org/wiki/Сортування_бульбашкою
+https://en.wikipedia.org/wiki/Bubble_sort
+1.2. Сортування вибором (Selection sort)
+https://uk.wikipedia.org/wiki/Сортування_вибором
+https://en.wikipedia.org/wiki/Selection_sort
+1.3. Сортування включенням (сортування вставкою, Insertion sort)
+https://uk.wikipedia.org/wiki/Сортування_включенням
+https://en.wikipedia.org/wiki/Insertion_sort
+2. Реалізувати два методи сортування відповідно до свого варіанту з таблиці 1.
+3. Відповісти на контрольні питання.
+
+Варіант №20
+Тип масиву: double[]
+Порядок сортування: по спаданню
+Метод 1: Selection sort
+Метод 2: Insertion sort

@@ -30,7 +30,8 @@ public class Lab4 {
             return max;
         }
 
-        // Завдання №66: Об'єднати два масиви A(n) і B(m) в один C(n+m)
+        // Завдання №66: Задано масиви А(n) та В(m). Сформувати масив С(n+m), елементами якого є n
+        //елементів масиву A, за якими слідують m елементів масиву B.
         public static int[] mergeArrays(int[] arrayA, int[] arrayB) {
             int[] mergedArray = new int[arrayA.length + arrayB.length]; // Створюємо новий масив розміру n+m
             System.arraycopy(arrayA, 0, mergedArray, 0, arrayA.length); // Копіюємо елементи масиву A
