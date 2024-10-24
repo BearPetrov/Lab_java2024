@@ -11,7 +11,7 @@ public class Lab5 {
         System.out.println("Масив після сортування вибором:");
         printArray(array);
 
-        // Знову ініціалізуємо масив для сортування вставками
+        // Ініціалізуємо масив для сортування вставками
         array = new double[]{3.5, 2.1, 5.7, 1.9, 4.8};
 
         // Виконуємо сортування вставками
@@ -42,7 +42,7 @@ public class Lab5 {
             double key = array[i];
             int j = i - 1;
             // Переміщення елементів, що менші за ключ вправо
-            while (j >= 0 && array[j] < key) {
+            while (j >= 0 && array[j] > key) {
                 array[j + 1] = array[j];
                 j--;
             }
