@@ -2,13 +2,10 @@ package Lab5;
 
 public class Test {
     public static void main(String[] args) {
-        int[] arr = {1, 6, 4, 5};
-        int min = arr[0];
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] < min) {
-                min = arr[i];
-            }
+        String[] arr = {"s", "b", "v", "f"};
+        for (String num : arr) {
+            System.out.println(num);
         }
-        System.out.println("Найменший елемент:" + min);
+        System.out.println();
     }
 }
