@@ -10,3 +10,5 @@
 #### [Лабораторна №4](https://github.com/BearPetrov/Lab_java2024/tree/main/src/Lab4)
 #### [Лабораторна №5](https://github.com/BearPetrov/Lab_java2024/tree/main/src/Lab5)
 #### [Лабораторна №6](https://github.com/BearPetrov/Lab_java2024/tree/main/src/Lab6)
+#### [Лабораторна №7](https://github.com/BearPetrov/Lab_java2024/tree/main/src/Lab7)
+#### [Лабораторна №8](https://github.com/BearPetrov/Lab_java2024/tree/main/src/Lab8)

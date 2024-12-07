@@ -28,7 +28,7 @@ public class Lab6 {
 
         public static void main(String[] args) {
             try {
-                System.out.println("Двійкове представлення числа 7: " + intToBinaryString(7));
+                System.out.println("Двійкове представлення числа 7: " + intToBinaryString(15));
                 System.out.println("Двійкове представлення числа 0: " + intToBinaryString(0));
                 System.out.println("Двійкове представлення числа -4: " + intToBinaryString(-4));
             } catch (IllegalArgumentException e) {
