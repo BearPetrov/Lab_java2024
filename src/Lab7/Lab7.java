@@ -1,158 +1,168 @@
 package Lab7;
 import java.util.*;
 
-    class Product {
-        private final String name;
-        private final double recommendedPrice;
+class Product {
+    private String name;
+    private double recommendedPrice;
 
-        public Product(String name, double recommendedPrice) {
-            this.name = name;
-            this.recommendedPrice = recommendedPrice;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public double getRecommendedPrice() {
-            return recommendedPrice;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("Product{name='%s', recommendedPrice=%.2f}", name, recommendedPrice);
-        }
+    public Product(String name, double recommendedPrice) {
+        this.name = name;
+        this.recommendedPrice = recommendedPrice;
     }
 
-    class OnlineStore {
-        private final String name;
-        private final Map<Product, Double> productsWithPrices;
-
-        public OnlineStore(String name) {
-            this.name = name;
-            this.productsWithPrices = new HashMap<>();
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Map<Product, Double> getProductsWithPrices() {
-            return productsWithPrices;
-        }
-
-        public void addProduct(Product product, double price) {
-            productsWithPrices.put(product, price);
-        }
-
-        @Override
-        public String toString() {
-            return String.format("OnlineStore{name='%s', products=%s}", name, productsWithPrices);
-        }
+    public String getName() {
+        return name;
     }
 
-    class ProductSearchService {
-        private final List<OnlineStore> stores;
+    public double getRecommendedPrice() {
+        return recommendedPrice;
+    }
 
-        public ProductSearchService() {
-            this.stores = new ArrayList<>();
+    @Override
+    public String toString() {
+        return name + " (Recommended Price: " + recommendedPrice + ")";
+    }
+}
+
+class OnlineStore {
+    private String name;
+    private List<Pair<Product, Double>> products;
+
+    public OnlineStore(String name, List<Pair<Product, Double>> products) {
+        this.name = name;
+        this.products = products;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Pair<Product, Double>> getProducts() {
+        return products;
+    }
+
+    @Override
+    public String toString() {
+        return "Store: " + name;
+    }
+}
+
+class ProductSearchService {
+    private List<OnlineStore> stores;
+
+    public ProductSearchService(List<OnlineStore> stores) {
+        this.stores = stores;
+    }
+
+    // Завдання 1: знайти мінімальну ціну на заданий товар (Iterator)
+    public double findMinimumPrice(String productName) {
+        double minPrice = Double.MAX_VALUE;
+        Iterator<OnlineStore> iterator = stores.iterator(); // нетипізований ітератор
+        while (iterator.hasNext()) {
+            OnlineStore store = iterator.next();
+            for (Pair<Product, Double> productEntry : store.getProducts()) {
+                if (productEntry.getKey().getName().equals(productName)) {
+                    minPrice = Math.min(minPrice, productEntry.getValue());
+                }
+            }
         }
+        return minPrice == Double.MAX_VALUE ? -1 : minPrice; // -1 якщо товар не знайдено
+    }
 
-        public void addStore(OnlineStore store) {
-            stores.add(store);
+    // Завдання 2: скласти список магазинів з мінімальною ціною (for-each)
+    public List<String> getStoresWithMinimumPrice(String productName) {
+        List<String> result = new ArrayList<>();
+        double minPrice = findMinimumPrice(productName);
+        if (minPrice == -1) return result;
+
+        for (OnlineStore store : stores) {
+            for (Pair<Product, Double> productEntry : store.getProducts()) {
+                if (productEntry.getKey().getName().equals(productName) &&
+                        productEntry.getValue() == minPrice) {
+                    result.add(store.getName());
+                    break;
+                }
+            }
         }
+        return result;
+    }
 
-        // Задача 1: знайти мінімальну ціну на заданий товар (нетипізований ітератор)
-        public double findMinPrice(String productName) {
-            double minPrice = Double.MAX_VALUE;
-            Iterator<OnlineStore> iterator = stores.iterator();
-
+    // Завдання 3: чи є магазин, усі товари якого дешевші за рекомендовану ціну (типізований ітератор)
+    public boolean hasStoreWithAllCheaperThanRecommended() {
+        for (OnlineStore store : stores) {
+            boolean allCheaper = true;
+            Iterator<Pair<Product, Double>> iterator = store.getProducts().iterator(); // типізований ітератор
             while (iterator.hasNext()) {
-                OnlineStore store = iterator.next();
-                for (Map.Entry<Product, Double> entry : store.getProductsWithPrices().entrySet()) {
-                    if (entry.getKey().getName().equals(productName)) {
-                        minPrice = Math.min(minPrice, entry.getValue());
-                    }
+                Pair<Product, Double> productEntry = iterator.next();
+                if (productEntry.getValue() >= productEntry.getKey().getRecommendedPrice()) {
+                    allCheaper = false;
+                    break;
                 }
             }
-
-            return minPrice == Double.MAX_VALUE ? -1 : minPrice;
+            if (allCheaper) return true;
         }
+        return false;
+    }
+}
 
-        // Задача 2: список магазинів, де товар можна купити за мінімальною ціною (for-each цикл)
-        public List<String> findStoresWithMinPrice(String productName) {
-            double minPrice = findMinPrice(productName);
-            List<String> result = new ArrayList<>();
+// Клас Pair (власна реалізація)
+class Pair<K, V> {
+    private final K key;
+    private final V value;
 
-            for (OnlineStore store : stores) {
-                for (Map.Entry<Product, Double> entry : store.getProductsWithPrices().entrySet()) {
-                    if (entry.getKey().getName().equals(productName) && entry.getValue() == minPrice) {
-                        result.add(store.getName());
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        // Задача 3: чи є магазин, усі товари якого дешевші за рекомендовану ціну (типізований ітератор)
-        public boolean isStoreCheaperThanRecommended() {
-            ListIterator<OnlineStore> iterator = stores.listIterator();
-
-            while (iterator.hasNext()) {
-                OnlineStore store = iterator.next();
-                boolean allCheaper = true;
-
-                for (Map.Entry<Product, Double> entry : store.getProductsWithPrices().entrySet()) {
-                    if (entry.getValue() >= entry.getKey().getRecommendedPrice()) {
-                        allCheaper = false;
-                        break;
-                    }
-                }
-
-                if (allCheaper) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
+    public Pair(K key, V value) {
+        this.key = key;
+        this.value = value;
     }
 
-    public class Lab7 {
-        public static void main(String[] args) {
-
-            Product product1 = new Product("Laptop", 1000);
-            Product product2 = new Product("Phone", 500);
-            Product product3 = new Product("Tablet", 300);
-
-            OnlineStore store1 = new OnlineStore("TechStore");
-            store1.addProduct(product1, 950);
-            store1.addProduct(product2, 450);
-
-            OnlineStore store2 = new OnlineStore("GadgetShop");
-            store2.addProduct(product1, 1000);
-            store2.addProduct(product3, 290);
-
-            OnlineStore store3 = new OnlineStore("DiscountMart");
-            store3.addProduct(product1, 920);
-            store3.addProduct(product2, 400);
-            store3.addProduct(product3, 280);
-
-            ProductSearchService service = new ProductSearchService();
-            service.addStore(store1);
-            service.addStore(store2);
-            service.addStore(store3);
-
-
-            System.out.println("Задача 1: Мінімальна ціна на 'Laptop':");
-            System.out.println(service.findMinPrice("Laptop"));
-
-            System.out.println("Задача 2: Магазини з мінімальною ціною на 'Laptop':");
-            System.out.println(service.findStoresWithMinPrice("Laptop"));
-
-            System.out.println("Задача 3: Чи є магазин, усі товари якого дешевші за рекомендовану ціну?");
-            System.out.println(service.isStoreCheaperThanRecommended());
-        }
+    public K getKey() {
+        return key;
     }
 
+    public V getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + key + ", " + value + ")";
+    }
+}
+
+public class Lab7 {
+    public static void main(String[] args) {
+
+        Product phone = new Product("Phone", 800);
+        Product laptop = new Product("Laptop", 1500);
+        Product tablet = new Product("Tablet", 500);
+
+        OnlineStore store1 = new OnlineStore("TechShop", Arrays.asList(
+                new Pair<>(phone, 780.0),
+                new Pair<>(laptop, 1550.0)
+        ));
+
+        OnlineStore store2 = new OnlineStore("GadgetWorld", Arrays.asList(
+                new Pair<>(phone, 800.0),
+                new Pair<>(tablet, 450.0)
+        ));
+
+        OnlineStore store3 = new OnlineStore("ElectroMall", Arrays.asList(
+                new Pair<>(phone, 790.0),
+                new Pair<>(laptop, 1400.0),
+                new Pair<>(tablet, 490.0)
+        ));
+
+        // Додати магазини до сервісу пошуку
+        ProductSearchService service = new ProductSearchService(Arrays.asList(store1, store2, store3));
+
+        // Завдання 1
+        System.out.println("Minimum price for Phone: " + service.findMinimumPrice("Phone"));
+
+        // Завдання 2
+        System.out.println("Stores with minimum price for Phone: " + service.getStoresWithMinimumPrice("Phone"));
+
+        // Завдання 3
+        System.out.println("Is there a store where all products are cheaper than recommended price?");
+        System.out.println(service.hasStoreWithAllCheaperThanRecommended());
+    }
+}

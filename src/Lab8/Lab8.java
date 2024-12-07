@@ -1,9 +1,5 @@
 package Lab8;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 class Product {
     private String name;
@@ -23,141 +19,137 @@ class Product {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Product product = (Product) obj;
-        return name.equals(product.name);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Double.compare(product.recommendedPrice, recommendedPrice) == 0 &&
+                Objects.equals(name, product.name);
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return Objects.hash(name, recommendedPrice);
     }
 
     @Override
     public String toString() {
-        return "Product{name='" + name + "', recommendedPrice=" + recommendedPrice + "}";
+        return name + " (Recommended Price: " + recommendedPrice + ")";
     }
 }
 
 class OnlineStore {
     private String name;
-    private Set<Product> products = new HashSet<>();
-    private Map<Product, Double> productPrices = new HashMap<>();
+    private Map<Product, Double> productPriceMap;
 
-    public OnlineStore(String name) {
+    public OnlineStore(String name, Map<Product, Double> productPriceMap) {
         this.name = name;
+        this.productPriceMap = productPriceMap;
     }
 
     public String getName() {
         return name;
     }
 
-    public void addProduct(Product product, double price) {
-        products.add(product);
-        productPrices.put(product, price);
-    }
-
-    public Double getPrice(Product product) {
-        return productPrices.get(product);
-    }
-
-    public Set<Product> getProducts() {
-        return products;
+    public Map<Product, Double> getProductPriceMap() {
+        return productPriceMap;
     }
 
     @Override
     public String toString() {
-        return name ;
+        return "Store: " + name;
     }
 }
 
+// Клас ProductSearchService
 class ProductSearchService {
-    private Set<OnlineStore> stores = new HashSet<>();
+    private Set<OnlineStore> stores;
 
-    public void addStore(OnlineStore store) {
-        stores.add(store);
+    public ProductSearchService(Set<OnlineStore> stores) {
+        this.stores = stores;
     }
 
-    public Set<OnlineStore> getStores() {
-        return stores;
-    }
-
-    public double findMinPrice(Product product) {
+    // Завдання 1: знайти мінімальну ціну на заданий товар
+    public double findMinimumPrice(String productName) {
         double minPrice = Double.MAX_VALUE;
         for (OnlineStore store : stores) {
-            Double price = store.getPrice(product);
-            if (price != null && price < minPrice) {
-                minPrice = price;
+            for (Map.Entry<Product, Double> entry : store.getProductPriceMap().entrySet()) {
+                if (entry.getKey().getName().equals(productName)) {
+                    minPrice = Math.min(minPrice, entry.getValue());
+                }
             }
         }
-        return minPrice == Double.MAX_VALUE ? -1 : minPrice;
+        return minPrice == Double.MAX_VALUE ? -1 : minPrice; // -1 якщо товар не знайдено
     }
 
-    public Set<OnlineStore> findStoresWithMinPrice(Product product) {
-        double minPrice = findMinPrice(product);
-        Set<OnlineStore> result = new HashSet<>();
+    // Завдання 2: скласти список магазинів з мінімальною ціною
+    public Set<String> getStoresWithMinimumPrice(String productName) {
+        Set<String> result = new HashSet<>();
+        double minPrice = findMinimumPrice(productName);
+        if (minPrice == -1) return result;
+
         for (OnlineStore store : stores) {
-            if (Double.valueOf(minPrice).equals(store.getPrice(product))) {
-                result.add(store);
+            for (Map.Entry<Product, Double> entry : store.getProductPriceMap().entrySet()) {
+                if (entry.getKey().getName().equals(productName) &&
+                        entry.getValue() == minPrice) {
+                    result.add(store.getName());
+                    break;
+                }
             }
         }
         return result;
     }
 
-    public boolean isAllProductsBelowRecommendedPrice(OnlineStore store) {
-        for (Product product : store.getProducts()) {
-            double price = store.getPrice(product);
-            if (price >= product.getRecommendedPrice()) {
-                return false;
+    // Завдання 3: чи є магазин, усі товари якого дешевші за рекомендовану ціну
+    public boolean hasStoreWithAllCheaperThanRecommended() {
+        for (OnlineStore store : stores) {
+            boolean allCheaper = true;
+            for (Map.Entry<Product, Double> entry : store.getProductPriceMap().entrySet()) {
+                if (entry.getValue() >= entry.getKey().getRecommendedPrice()) {
+                    allCheaper = false;
+                    break;
+                }
             }
+            if (allCheaper) return true;
         }
-        return true;
+        return false;
     }
 }
-
 
 public class Lab8 {
     public static void main(String[] args) {
 
-        Product product1 = new Product("Телевізор", 500.0);
-        Product product2 = new Product("Смартфон", 300.0);
-        Product product3 = new Product("Ноутбук", 1000.0);
+        Product phone = new Product("Phone", 800);
+        Product laptop = new Product("Laptop", 1500);
+        Product tablet = new Product("Tablet", 500);
 
-        OnlineStore store1 = new OnlineStore("Магазин 1");
-        store1.addProduct(product1, 480.0);
-        store1.addProduct(product2, 290.0);
-        store1.addProduct(product3, 1050.0);
+        OnlineStore store1 = new OnlineStore("TechShop", new HashMap<>(Map.of(
+                phone, 780.0,
+                laptop, 1550.0
+        )));
 
-        OnlineStore store2 = new OnlineStore("Магазин 2");
-        store2.addProduct(product1, 400.0);
-        store2.addProduct(product2, 270.0);
-        store2.addProduct(product3, 950.0);
+        OnlineStore store2 = new OnlineStore("GadgetWorld", new HashMap<>(Map.of(
+                phone, 800.0,
+                tablet, 450.0
+        )));
 
-        OnlineStore store3 = new OnlineStore("Магазин 3");
-        store3.addProduct(product1, 470.0);
-        store3.addProduct(product2, 310.0);
-        store3.addProduct(product3, 980.0);
+        OnlineStore store3 = new OnlineStore("ElectroMall", new HashMap<>(Map.of(
+                phone, 750.0,
+                laptop, 1400.0,
+                tablet, 490.0
+        )));
 
-        ProductSearchService service = new ProductSearchService();
-        service.addStore(store1);
-        service.addStore(store2);
-        service.addStore(store3);
+        // Додати магазини до сервісу пошуку
+        ProductSearchService service = new ProductSearchService(Set.of(store1, store2, store3));
 
-        // 1. Знайти мінімальну ціну на товар
-        Product targetProduct = product1;
-        double minPrice = service.findMinPrice(targetProduct);
-        System.out.println("Мінімальна ціна на " + targetProduct.getName() + ": " + minPrice);
+        // Завдання 1
+        System.out.println("Minimum price for Phone: " + service.findMinimumPrice("Phone"));
 
-        // 2. Знайти магазини з мінімальною ціною на товар
-        Set<OnlineStore> minPriceStores = service.findStoresWithMinPrice(targetProduct);
-        System.out.println("Магазини з мінімальною ціною на " + targetProduct.getName() + ": " + minPriceStores);
+        // Завдання 2
+        System.out.println("Stores with minimum price for Phone: " + service.getStoresWithMinimumPrice("Phone"));
 
-        // 3. Перевірити, чи є магазин, де всі товари дешевші за рекомендовану ціну
-        for (OnlineStore store : service.getStores()) {
-            boolean isBelowRecommended = service.isAllProductsBelowRecommendedPrice(store);
-            System.out.println("У магазині " + store.getName() + " всі товари дешевші за рекомендовану ціну: " + isBelowRecommended);
-        }
+        // Завдання 3
+        System.out.println("Is there a store where all products are cheaper than recommended price?");
+        System.out.println(service.hasStoreWithAllCheaperThanRecommended());
     }
 }
