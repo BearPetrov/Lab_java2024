@@ -57,7 +57,7 @@ class ProductSearchService {
     // Завдання 1: знайти мінімальну ціну на заданий товар (Iterator)
     public double findMinimumPrice(String productName) {
         double minPrice = Double.MAX_VALUE;
-        Iterator<OnlineStore> iterator = stores.iterator(); // нетипізований ітератор
+        Iterator<OnlineStore> iterator = stores.iterator();
         while (iterator.hasNext()) {
             OnlineStore store = iterator.next();
             for (Pair<Product, Double> productEntry : store.getProducts()) {
@@ -66,7 +66,7 @@ class ProductSearchService {
                 }
             }
         }
-        return minPrice == Double.MAX_VALUE ? -1 : minPrice; // -1 якщо товар не знайдено
+        return minPrice == Double.MAX_VALUE ? -1 : minPrice;
     }
 
     // Завдання 2: скласти список магазинів з мінімальною ціною (for-each)
@@ -91,7 +91,7 @@ class ProductSearchService {
     public boolean hasStoreWithAllCheaperThanRecommended() {
         for (OnlineStore store : stores) {
             boolean allCheaper = true;
-            Iterator<Pair<Product, Double>> iterator = store.getProducts().iterator(); // типізований ітератор
+            Iterator<Pair<Product, Double>> iterator = store.getProducts().iterator();
             while (iterator.hasNext()) {
                 Pair<Product, Double> productEntry = iterator.next();
                 if (productEntry.getValue() >= productEntry.getKey().getRecommendedPrice()) {
@@ -105,7 +105,6 @@ class ProductSearchService {
     }
 }
 
-// Клас Pair (власна реалізація)
 class Pair<K, V> {
     private final K key;
     private final V value;
@@ -136,23 +135,22 @@ public class Lab7 {
         Product laptop = new Product("Laptop", 1500);
         Product tablet = new Product("Tablet", 500);
 
-        OnlineStore store1 = new OnlineStore("TechShop", Arrays.asList(
+        OnlineStore store1 = new OnlineStore("Rozetka", Arrays.<Pair<Product, Double>>asList(
                 new Pair<>(phone, 780.0),
                 new Pair<>(laptop, 1550.0)
         ));
 
-        OnlineStore store2 = new OnlineStore("GadgetWorld", Arrays.asList(
+        OnlineStore store2 = new OnlineStore("GadgetStore", Arrays.<Pair<Product, Double>>asList(
                 new Pair<>(phone, 800.0),
                 new Pair<>(tablet, 450.0)
         ));
 
-        OnlineStore store3 = new OnlineStore("ElectroMall", Arrays.asList(
+        OnlineStore store3 = new OnlineStore("Mall", Arrays.<Pair<Product, Double>>asList(
                 new Pair<>(phone, 790.0),
                 new Pair<>(laptop, 1400.0),
                 new Pair<>(tablet, 490.0)
         ));
 
-        // Додати магазини до сервісу пошуку
         ProductSearchService service = new ProductSearchService(Arrays.asList(store1, store2, store3));
 
         // Завдання 1

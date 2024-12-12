@@ -61,7 +61,6 @@ class OnlineStore {
     }
 }
 
-// Клас ProductSearchService
 class ProductSearchService {
     private Set<OnlineStore> stores;
 
@@ -79,7 +78,7 @@ class ProductSearchService {
                 }
             }
         }
-        return minPrice == Double.MAX_VALUE ? -1 : minPrice; // -1 якщо товар не знайдено
+        return minPrice == Double.MAX_VALUE ? -1 : minPrice;
     }
 
     // Завдання 2: скласти список магазинів з мінімальною ціною
@@ -123,23 +122,22 @@ public class Lab8 {
         Product laptop = new Product("Laptop", 1500);
         Product tablet = new Product("Tablet", 500);
 
-        OnlineStore store1 = new OnlineStore("TechShop", new HashMap<>(Map.of(
+        OnlineStore store1 = new OnlineStore("Rozetka", new HashMap<>(Map.of(
                 phone, 780.0,
                 laptop, 1550.0
         )));
 
-        OnlineStore store2 = new OnlineStore("GadgetWorld", new HashMap<>(Map.of(
+        OnlineStore store2 = new OnlineStore("GadgetStore", new HashMap<>(Map.of(
                 phone, 800.0,
                 tablet, 450.0
         )));
 
-        OnlineStore store3 = new OnlineStore("ElectroMall", new HashMap<>(Map.of(
+        OnlineStore store3 = new OnlineStore("Mall", new HashMap<>(Map.of(
                 phone, 750.0,
                 laptop, 1400.0,
                 tablet, 490.0
         )));
 
-        // Додати магазини до сервісу пошуку
         ProductSearchService service = new ProductSearchService(Set.of(store1, store2, store3));
 
         // Завдання 1
